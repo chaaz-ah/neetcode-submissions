@@ -64,6 +64,27 @@ return list(res.values())   # converts view → actual list
 
 ---
 
+## dict.items() vs range(len())
+Use `.items()` to iterate over a dict; use `range(len())` for lists indexed by position.
+```python
+# instead of: for i in range(len(freq)):  → KeyError (dict keys aren't 0,1,2,...)
+freq = defaultdict(int)
+freq[3] += 2
+freq[1] += 1
+# freq[0] is just a new key with value 0 — not the first element
+
+# use .items() to get every (key, value) pair from a dict:
+for num, count in freq.items():
+    print(num, count)   # (3, 2) then (1, 1)
+
+# range(len()) is for lists, where keys ARE 0,1,2,...:
+lst = [10, 20, 30]
+for i in range(len(lst)):
+    print(lst[i])       # fine — lst[0], lst[1], lst[2] exist
+```
+
+---
+
 ## heapq (min-heap)
 Python's `heapq` is always a min-heap — smallest element is at the root and comes out first on pop.
 ```python
