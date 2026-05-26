@@ -29,6 +29,7 @@ Status key: 🔴 recurring · 🟡 improving · 🟢 fixed (seen clean for 3+ pr
 | Frequency map + rank extraction (top-k) | top-k-elements-in-list | 🔴 shaky — counting step solid, extraction (sort/heap/bucket) all looked up |
 | Min-heap for top-k (heapq) | top-k-elements-in-list | 🔴 shaky — used in sub-2 but pruning vs extraction pops not yet understood |
 | Length-prefix encoding / framing | string-encode-and-decode | 🔴 shaky — length-prefix instinct correct but all 3 correct subs looked up |
+| Prefix products (left × right decomposition) | products-of-array-discluding-self | 🔴 shaky — right instinct in sub-1 but broken implementation; sub-3/4 are looked-up solution |
 
 Confidence key: 🔴 shaky · 🟡 building · 🟢 solid
 
@@ -44,11 +45,14 @@ Confidence key: 🔴 shaky · 🟡 building · 🟢 solid
 | anagram-groups | 4 (Python) | 2026-05-14 | marked — redo in 1 week |
 | top-k-elements-in-list | 4 (Python) | 2026-05-18 | marked — redo in 1 week |
 | string-encode-and-decode | 6 (Python) | 2026-05-22 | marked — redo in 1 week |
+| products-of-array-discluding-self | 5 (Python) | 2026-05-26 | marked — redo in 1 week |
 
 ---
 
 ## Coach observations
 <!-- append after each session, newest first -->
+
+*2026-05-26 — products-of-array-discluding-self reviewed. 5 submissions (Python). Sub-0 was a correct brute force O(n²) with ChatGPT assist. Sub-1 was an independent attempt at the prefix/postfix approach after watching NeetCode's algorithm explanation — right instinct, broken in two ways: prefix/postfix arrays store individual values instead of running products, and `i != 0 | i != len(nums)-1` has an operator precedence bug (`|` over `!=`) that makes the condition always False. Sub-2 retreated to O(n²) brute force — no comment. Subs 3 and 4 are the NeetCode O(n) scalar prefix/postfix solution, identical, both correct. Assist level: sub-0 ChatGPT assisted / sub-1 watched algorithm then implemented independently (broken) / sub-2 unclear / sub-3/4 looked up solution. `range(len())` debt still present in sub-0/1/2. One SYNTAX.md entry added: `|` (bitwise OR) vs `or` (boolean OR) — sub-1's boundary bug. string-encode-and-decode "What made it click" still blank — flagged again. Revisit marked for 1 week.*
 
 *2026-05-22 — string-encode-and-decode reviewed. 6 submissions (Python). Sub-0 was an independent attempt using space as delimiter — encode was complete, decode threw a NameError on undefined `letter`. Sub-1 was ChatGPT-assisted, still broken (can't mutate `i` inside a Python `for` loop). Sub-2 was ChatGPT-solved decode — structurally clean but space-delimiter approach is semantically wrong for strings containing spaces. Subs 3/4/5 are all NeetCode length-prefix solutions: sub-3 had a missing `i += 1` after comma parsing, sub-4 fixed it, sub-5 is the cleaner `len#str` interleaved format. Assist level: sub-0 independent (broken) / sub-1 ChatGPT assisted (broken) / sub-2 ChatGPT solved (wrong approach) / sub-3/4/5 looked up solution. `range(len())` debt still present in sub-0/1/2. One SYNTAX.md entry added: `dict.items()` vs `range(len())` — user explicitly asked for this in top-k notes. top-k "Your turn" partially answered (`.items()` insight correct); "What made it click" still blank — flagged again. Revisit marked for 1 week.*
 

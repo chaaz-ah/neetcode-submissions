@@ -85,6 +85,23 @@ for i in range(len(lst)):
 
 ---
 
+## `|` vs `or` (bitwise OR vs boolean OR)
+
+Use `or` for boolean logic. `|` is bitwise OR — has *higher* precedence than `!=`, `==`, and other comparisons, which causes silent bugs.
+```python
+# WRONG — i != 0 | i != len(nums)-1
+# parses as: i != (0 | i) != len(nums)-1
+#          = i != i != len(nums)-1   → always False (i == i is always True)
+
+# use 'or' for boolean conditions:
+if i != 0 or i != len(nums) - 1:   # correct
+
+# bitwise | is for operating on the bits of integers, not for conditions:
+0b1010 | 0b0101  # → 0b1111 (bit-level)
+```
+
+---
+
 ## heapq (min-heap)
 Python's `heapq` is always a min-heap — smallest element is at the root and comes out first on pop.
 ```python
