@@ -126,3 +126,31 @@ result = [heapq.heappop(heap)[1] for _ in range(k)]   # EXTRACTION — drain wha
 ```
 
 ---
+
+## `isalnum()` — alphanumeric check in one call
+Use when you need to keep only letters and digits and discard everything else.
+```python
+# instead of:
+char.isalpha() or char.isnumeric()
+
+# use:
+char.isalnum()   # True for a-z, A-Z, 0-9 — same result, one method
+
+# common pattern for palindrome filtering:
+filtered = "".join(c.lower() for c in s if c.isalnum())
+```
+
+---
+
+## Don't shadow `reversed`
+`reversed` is a Python builtin that returns a reverse iterator. Naming a variable `reversed` hides it.
+```python
+# instead of:
+reversed = s[::-1]   # shadows the builtin
+
+# use:
+rev = s[::-1]
+# or just: return s == s[::-1]  (no variable needed)
+```
+
+---
