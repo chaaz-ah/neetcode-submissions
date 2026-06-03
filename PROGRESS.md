@@ -30,7 +30,7 @@ Status key: 🔴 recurring · 🟡 improving · 🟢 fixed (seen clean for 3+ pr
 | Min-heap for top-k (heapq) | top-k-elements-in-list | 🔴 shaky — used in sub-2 but pruning vs extraction pops not yet understood |
 | Length-prefix encoding / framing | string-encode-and-decode | 🔴 shaky — length-prefix instinct correct but all 3 correct subs looked up |
 | Prefix products (left × right decomposition) | products-of-array-discluding-self | 🔴 shaky — right instinct in sub-1 but broken implementation; sub-3/4 are looked-up solution |
-| Two Pointers (inward scan) | is-palindrome | 🔴 shaky — first exposure; sub-0/1/2 independent (with syntax lookup), sub-3/4 looked up |
+| Two Pointers (inward scan) | is-palindrome, two-integer-sum-ii | 🟡 building — independent correct implementation in sub-2 (after watching algorithm), directional logic understood |
 | Hash set for sequence membership / start detection | longest-consecutive-sequence | 🔴 shaky — sub-1 independent correct O(n log n); O(n) set trick looked up |
 | Multi-dimensional constraint hashing (tuple keys) | valid-sudoku | 🔴 shaky — rows/cols independent; box indexing formula and single-pass approach looked up |
 
@@ -52,11 +52,14 @@ Confidence key: 🔴 shaky · 🟡 building · 🟢 solid
 | is-palindrome | 5 (Python) | 2026-06-03 | not marked |
 | longest-consecutive-sequence | 3 (Python) | 2026-06-03 | not marked |
 | valid-sudoku | 3 (Python) | 2026-06-03 | not marked |
+| two-integer-sum-ii | 3 (Python) | 2026-06-03 | not marked |
 
 ---
 
 ## Coach observations
 <!-- append after each session, newest first -->
+
+*2026-06-03 — two-integer-sum-ii reviewed. 3 submissions (Python). Sub-0 had a classic "iterate values, use them as indices" bug (`for i in numbers` → `numbers[i]`). Sub-1 patched to correct indexing but stayed O(n²) — sorted constraint completely unused. Sub-2 is a correct two-pointer implementation done independently after watching the algorithm walk-through; comment confirms ownership ("implemented this by myself"). Minor issue in sub-2: three `if` branches instead of `elif` — no wrong answers but one extra comparison per iteration. Assist level: sub-0/1 independent (broken) / sub-2 watched algorithm then implemented independently. Two Pointers confidence upgraded to 🟡 building. `range(len())` debt still visible in sub-1. valid-sudoku "What made it click" still blank — flagged again at top of notes.*
 
 *2026-06-03 — longest-consecutive-sequence and valid-sudoku reviewed (both missing notes). longest-consecutive-sequence: 3 submissions. Sub-0 genuine attempt — correct sort-based structure but streak never resets between sequences (bug), dead `else: continue`. Sub-1 independent fix — correct O(n log n) sort with duplicate-skip and proper streak reset; solid work. Sub-2 is the O(n) set solution with the `num - 1 not in numSet` start-check trick — no comment, jumped straight from working O(n log n) solution, likely looked up. valid-sudoku: 3 submissions. Sub-0 independent — rows and cols correct, comment explicitly says "idk how to do 3x3". Sub-1 added box logic after seeing solution — rows/cols independent, box formula (`(square // 3) * 3 + i`) looked up. Sub-2 copied the single-pass defaultdict with `(r // 3, c // 3)` tuple key. Key thing to internalize on both: the start-check trick in LCS and the box-key formula in sudoku. No new SYNTAX.md entries — tuple key already documented from anagram-groups. `range(len())` style debt visible again in valid-sudoku sub-0.*
 
