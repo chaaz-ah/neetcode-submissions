@@ -30,6 +30,9 @@ Status key: 🔴 recurring · 🟡 improving · 🟢 fixed (seen clean for 3+ pr
 | Min-heap for top-k (heapq) | top-k-elements-in-list | 🔴 shaky — used in sub-2 but pruning vs extraction pops not yet understood |
 | Length-prefix encoding / framing | string-encode-and-decode | 🔴 shaky — length-prefix instinct correct but all 3 correct subs looked up |
 | Prefix products (left × right decomposition) | products-of-array-discluding-self | 🔴 shaky — right instinct in sub-1 but broken implementation; sub-3/4 are looked-up solution |
+| Two Pointers (inward scan) | is-palindrome | 🔴 shaky — first exposure; sub-0/1/2 independent (with syntax lookup), sub-3/4 looked up |
+| Hash set for sequence membership / start detection | longest-consecutive-sequence | 🔴 shaky — sub-1 independent correct O(n log n); O(n) set trick looked up |
+| Multi-dimensional constraint hashing (tuple keys) | valid-sudoku | 🔴 shaky — rows/cols independent; box indexing formula and single-pass approach looked up |
 
 Confidence key: 🔴 shaky · 🟡 building · 🟢 solid
 
@@ -46,11 +49,18 @@ Confidence key: 🔴 shaky · 🟡 building · 🟢 solid
 | top-k-elements-in-list | 4 (Python) | 2026-05-18 | marked — redo in 1 week |
 | string-encode-and-decode | 6 (Python) | 2026-05-22 | marked — redo in 1 week |
 | products-of-array-discluding-self | 5 (Python) | 2026-05-26 | marked — redo in 1 week |
+| is-palindrome | 5 (Python) | 2026-06-03 | not marked |
+| longest-consecutive-sequence | 3 (Python) | 2026-06-03 | not marked |
+| valid-sudoku | 3 (Python) | 2026-06-03 | not marked |
 
 ---
 
 ## Coach observations
 <!-- append after each session, newest first -->
+
+*2026-06-03 — longest-consecutive-sequence and valid-sudoku reviewed (both missing notes). longest-consecutive-sequence: 3 submissions. Sub-0 genuine attempt — correct sort-based structure but streak never resets between sequences (bug), dead `else: continue`. Sub-1 independent fix — correct O(n log n) sort with duplicate-skip and proper streak reset; solid work. Sub-2 is the O(n) set solution with the `num - 1 not in numSet` start-check trick — no comment, jumped straight from working O(n log n) solution, likely looked up. valid-sudoku: 3 submissions. Sub-0 independent — rows and cols correct, comment explicitly says "idk how to do 3x3". Sub-1 added box logic after seeing solution — rows/cols independent, box formula (`(square // 3) * 3 + i`) looked up. Sub-2 copied the single-pass defaultdict with `(r // 3, c // 3)` tuple key. Key thing to internalize on both: the start-check trick in LCS and the box-key formula in sudoku. No new SYNTAX.md entries — tuple key already documented from anagram-groups. `range(len())` style debt visible again in valid-sudoku sub-0.*
+
+*2026-06-03 — is-palindrome reviewed. 5 submissions (Python). First Two Pointers problem — new pattern category. Sub-0/1 were genuine independent attempts: core idea correct (filter → lowercase → reverse-compare) but used `isalpha()` which misses digits, shadowed the Python builtin `reversed`, left dead code (`print` after `return`), and used verbose `if x: return True; return False` instead of `return x`. Sub-2 independently caught the digit gap and fixed it with `isalpha() or isnumeric()` — right diagnosis, `isalnum()` is the clean version. Subs 3 and 4 are looked-up solutions: sub-3 is the clean string-build with `isalnum()`, sub-4 is the optimal two-pointer (with manual `ord()` checks — user's own comment "too much js" shows they knew it was off). Assist level: sub-0/1 independent (syntax lookup) / sub-2 independent (self-corrected) / sub-3/4 looked up. Two SYNTAX.md entries added: `isalnum()` and `reversed` builtin shadowing. Style debts: no trailing semicolons or `range(len())` this session — possible improvement there. `reversed` shadowing is a new variant of the builtin-shadowing habit. products-of-array "What made it click" still blank — flagged again in is-palindrome notes.*
 
 *2026-05-26 — products-of-array-discluding-self reviewed. 5 submissions (Python). Sub-0 was a correct brute force O(n²) with ChatGPT assist. Sub-1 was an independent attempt at the prefix/postfix approach after watching NeetCode's algorithm explanation — right instinct, broken in two ways: prefix/postfix arrays store individual values instead of running products, and `i != 0 | i != len(nums)-1` has an operator precedence bug (`|` over `!=`) that makes the condition always False. Sub-2 retreated to O(n²) brute force — no comment. Subs 3 and 4 are the NeetCode O(n) scalar prefix/postfix solution, identical, both correct. Assist level: sub-0 ChatGPT assisted / sub-1 watched algorithm then implemented independently (broken) / sub-2 unclear / sub-3/4 looked up solution. `range(len())` debt still present in sub-0/1/2. One SYNTAX.md entry added: `|` (bitwise OR) vs `or` (boolean OR) — sub-1's boundary bug. string-encode-and-decode "What made it click" still blank — flagged again. Revisit marked for 1 week.*
 
