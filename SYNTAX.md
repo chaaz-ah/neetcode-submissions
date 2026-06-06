@@ -154,3 +154,37 @@ rev = s[::-1]
 ```
 
 ---
+
+## `max(best, x)` for running max (and `min` likewise)
+Use when you're tracking a running max/min in a loop. Cleaner than an `if`.
+```python
+# instead of:
+if area > highArea:
+    highArea = area
+
+# use:
+highArea = max(highArea, area)
+
+# same for min:
+lowest = min(lowest, x)
+```
+One line, no branch, no variable name typos. Reach for this whenever you see "if new > best: best = new".
+
+---
+
+## list / set / dict — which mutator is which
+The three collections use three different verbs. Mixing them up is a fast way to get a `AttributeError`.
+```python
+result = []
+result.append(x)           # list  → .append(x)
+
+result = set()
+result.add(x)              # set   → .add(x)
+result.add(tuple([1,2,3])) # tuple-ify lists if you need to add them
+
+result = {}
+result[key] = value        # dict  → [key] = value (or .update({k:v}))
+```
+Common in dedup patterns: `set.add(tuple(triple))` then `[list(t) for t in result]` to convert back to `list[list]`.
+
+---

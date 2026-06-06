@@ -7,3 +7,4 @@ class Solution:
                 if area > highArea:
                     highArea = area
         return highArea
+    #did this on my own lol

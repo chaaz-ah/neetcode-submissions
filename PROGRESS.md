@@ -8,10 +8,13 @@ Updated by the coach after each review session. Do not edit manually.
 
 | Habit | First flagged | Last seen | Status |
 |-------|--------------|-----------|--------|
-| Trailing semicolons | duplicate-integer | top-k-elements-in-list | 🔴 recurring |
-| Shadowing builtins (`map`, `list`) | duplicate-integer | top-k-elements-in-list | 🔴 recurring |
-| `range(len())` instead of `enumerate` | duplicate-integer | string-encode-and-decode | 🔴 recurring |
+| Trailing semicolons | duplicate-integer | top-k-elements-in-list | 🟡 improving — not seen since is-palindrome |
+| Shadowing builtins (`map`, `list`) | duplicate-integer | top-k-elements-in-list | 🟡 improving — `minArea` for max in max-water sub-1/2 is misnaming (different family) |
+| `range(len())` instead of `enumerate` | duplicate-integer | three-integer-sum | 🔴 recurring — sub-1/2/3/4/5 of three-integer-sum |
 | Two-pass when one-pass works | two-integer-sum | two-integer-sum | 🔴 recurring |
+| Index-as-value bug (`partial_sum + i` vs `+ nums[i]`) | two-integer-sum-ii | three-integer-sum | 🔴 recurring — second appearance, same exact bug shape |
+| Pointer movement inside conditional branch | max-water-container | max-water-container | 🟡 new — sub-1 infinite-loop; sub-2 fixed |
+| Misnaming variables (`minArea` while tracking max) | max-water-container | max-water-container | 🟡 new |
 
 Status key: 🔴 recurring · 🟡 improving · 🟢 fixed (seen clean for 3+ problems)
 
@@ -30,9 +33,12 @@ Status key: 🔴 recurring · 🟡 improving · 🟢 fixed (seen clean for 3+ pr
 | Min-heap for top-k (heapq) | top-k-elements-in-list | 🔴 shaky — used in sub-2 but pruning vs extraction pops not yet understood |
 | Length-prefix encoding / framing | string-encode-and-decode | 🔴 shaky — length-prefix instinct correct but all 3 correct subs looked up |
 | Prefix products (left × right decomposition) | products-of-array-discluding-self | 🔴 shaky — right instinct in sub-1 but broken implementation; sub-3/4 are looked-up solution |
-| Two Pointers (inward scan) | is-palindrome, two-integer-sum-ii | 🟡 building — independent correct implementation in sub-2 (after watching algorithm), directional logic understood |
+| Two Pointers (inward scan) | is-palindrome, two-integer-sum-ii, max-water-container, three-integer-sum | 🟡 building — three correct independent implementations now (palindrome sub-2, two-sum-ii sub-2, max-water sub-2 with hint); scaffolding owned, decision rule per-problem still needs verbal precision |
 | Hash set for sequence membership / start detection | longest-consecutive-sequence | 🔴 shaky — sub-1 independent correct O(n log n); O(n) set trick looked up |
 | Multi-dimensional constraint hashing (tuple keys) | valid-sudoku | 🔴 shaky — rows/cols independent; box indexing formula and single-pass approach looked up |
+| Two Pointers — greedy "move the bottleneck side" | max-water-container | 🟡 building — sub-2 correct implementation but verbal rule stated backward ("move the larger") |
+| Sort + fix-one + two-pointer with dedup (3Sum-style) | three-integer-sum | 🔴 shaky — sub-6 algorithm correct but dedup mechanics (outer skip + inner skip after match) explicitly not understood per comments |
+| Set-of-tuples for dedup of unordered triples | three-integer-sum | 🟡 building — sub-3/4 correct independent use of `set.add(tuple(...))` carrying anagram-groups syntax knowledge |
 
 Confidence key: 🔴 shaky · 🟡 building · 🟢 solid
 
@@ -53,11 +59,15 @@ Confidence key: 🔴 shaky · 🟡 building · 🟢 solid
 | longest-consecutive-sequence | 3 (Python) | 2026-06-03 | not marked |
 | valid-sudoku | 3 (Python) | 2026-06-03 | not marked |
 | two-integer-sum-ii | 3 (Python) | 2026-06-03 | not marked |
+| three-integer-sum | 7 (Python) | 2026-06-06 | marked — redo in 1 week |
+| max-water-container | 3 (Python) | 2026-06-06 | not marked |
 
 ---
 
 ## Coach observations
 <!-- append after each session, newest first -->
+
+*2026-06-06 — three-integer-sum (7 subs) and max-water-container (3 subs) reviewed. **three-integer-sum**: long arc — sub-0/1 tried two-pointer shape without prerequisites (no sort, no inner loop, index-as-value bug — same bug shape as two-integer-sum-ii sub-0, so flagging it as a recurring debt). Sub-2 was a broken O(n³) brute force that excluded valid triplets like `[0,0,0]` via pairwise inequality. Sub-3/4 reached correct O(n³) with sort + `set.add(tuple(...))` — the tuple-as-key syntax from anagram-groups carrying over independently is a real win. Sub-5 is a byte-duplicate of sub-4. Sub-6 is NeetCode's O(n²) two-pointer; algorithm correct, but comments explicitly say "dont get lines 6-7" (outer dedup skip) and "dont get why we do the following" (inner skip-loop after match) — the entire dedup mechanism is the gap. Also missing symmetric `e`-side dedup (only dedups `s`); still correct but extra work. Assist level: sub-0/1 independent (broken), sub-2 independent (broken), sub-3/4/5 partial-lookup ("looked solution a little"), sub-6 looked up. **max-water-container**: clean progression — sub-0 independent O(n²) brute force ("did this on my own lol"), sub-1 two-pointer attempt with two real bugs (`(s-e)` makes width negative so `if` branch never fires; pointer movement is inside `else:` so it freezes once area improves; ties cause infinite loop), sub-2 correct O(n) with hints. Sub-2 comment says "the hint that you should move the larger height was monumental" — but the code moves the *smaller* pointer (correct rule). Either the wording is off or the rule is backward in their head; called out at length in notes. Assist level: sub-0 independent, sub-1 independent (broken), sub-2 watched algorithm + hint. Two new SYNTAX.md entries: `max(best, x)` for running max, and list/set/dict mutator cheatsheet. Two Pointers pattern confidence upgraded — three correct independent implementations across is-palindrome/two-integer-sum-ii/max-water-container; scaffolding owned, per-problem decision rule still needs verbal precision. **"What made it click" still blank** across all of is-palindrome, longest-consecutive-sequence, valid-sudoku, two-integer-sum-ii — flagged at top of three-integer-sum notes. Two-integer-sum-ii's `while s <= e` question also unanswered — flagged.*
 
 *2026-06-03 — two-integer-sum-ii reviewed. 3 submissions (Python). Sub-0 had a classic "iterate values, use them as indices" bug (`for i in numbers` → `numbers[i]`). Sub-1 patched to correct indexing but stayed O(n²) — sorted constraint completely unused. Sub-2 is a correct two-pointer implementation done independently after watching the algorithm walk-through; comment confirms ownership ("implemented this by myself"). Minor issue in sub-2: three `if` branches instead of `elif` — no wrong answers but one extra comparison per iteration. Assist level: sub-0/1 independent (broken) / sub-2 watched algorithm then implemented independently. Two Pointers confidence upgraded to 🟡 building. `range(len())` debt still visible in sub-1. valid-sudoku "What made it click" still blank — flagged again at top of notes.*
 

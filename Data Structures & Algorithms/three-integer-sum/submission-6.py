@@ -5,6 +5,7 @@ class Solution:
         for i,a in enumerate(nums):
             if i > 0 and a == nums[i -1]:
                 continue
+            #also dont get lines 6-7
             s = i + 1
             e = len(nums)-1
 
