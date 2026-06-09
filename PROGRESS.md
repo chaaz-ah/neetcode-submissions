@@ -9,12 +9,14 @@ Updated by the coach after each review session. Do not edit manually.
 | Habit | First flagged | Last seen | Status |
 |-------|--------------|-----------|--------|
 | Trailing semicolons | duplicate-integer | top-k-elements-in-list | 🟡 improving — not seen since is-palindrome |
-| Shadowing builtins (`map`, `list`) | duplicate-integer | top-k-elements-in-list | 🟡 improving — `minArea` for max in max-water sub-1/2 is misnaming (different family) |
-| `range(len())` instead of `enumerate` | duplicate-integer | three-integer-sum | 🔴 recurring — sub-1/2/3/4/5 of three-integer-sum |
+| Shadowing builtins (`map`, `list`, `sum`) | duplicate-integer | trapping-rain-water | 🔴 recurring — `sum` shadowed in sub-1 |
+| `range(len())` instead of `enumerate` | duplicate-integer | trapping-rain-water | 🔴 recurring — sub-1 right-pass uses `range(len(height), 0, -1)` (also OOB); positive sign: left-pass used `enumerate` correctly |
 | Two-pass when one-pass works | two-integer-sum | two-integer-sum | 🔴 recurring |
-| Index-as-value bug (`partial_sum + i` vs `+ nums[i]`) | two-integer-sum-ii | three-integer-sum | 🔴 recurring — second appearance, same exact bug shape |
-| Pointer movement inside conditional branch | max-water-container | max-water-container | 🟡 new — sub-1 infinite-loop; sub-2 fixed |
-| Misnaming variables (`minArea` while tracking max) | max-water-container | max-water-container | 🟡 new |
+| Index-as-value bug (`for i in coll: use coll[i]`) | two-integer-sum-ii | trapping-rain-water | 🔴 recurring — **third appearance** in sub-1 (`for i in water: sum += water[i]`) |
+| Pointer movement inside conditional branch | max-water-container | max-water-container | 🟡 improving — not seen since |
+| Misnaming variables (`minArea` while tracking max) | max-water-container | max-water-container | 🟡 improving — not seen since |
+| Stale loop variable reuse (`value` from enumerate borrowed in second loop) | trapping-rain-water | trapping-rain-water | 🟡 new — sub-1 |
+| `[] * n` instead of `[0] * n` for list init | trapping-rain-water | trapping-rain-water | 🟡 new — sub-1 |
 
 Status key: 🔴 recurring · 🟡 improving · 🟢 fixed (seen clean for 3+ problems)
 
@@ -36,9 +38,10 @@ Status key: 🔴 recurring · 🟡 improving · 🟢 fixed (seen clean for 3+ pr
 | Two Pointers (inward scan) | is-palindrome, two-integer-sum-ii, max-water-container, three-integer-sum | 🟡 building — three correct independent implementations now (palindrome sub-2, two-sum-ii sub-2, max-water sub-2 with hint); scaffolding owned, decision rule per-problem still needs verbal precision |
 | Hash set for sequence membership / start detection | longest-consecutive-sequence | 🔴 shaky — sub-1 independent correct O(n log n); O(n) set trick looked up |
 | Multi-dimensional constraint hashing (tuple keys) | valid-sudoku | 🔴 shaky — rows/cols independent; box indexing formula and single-pass approach looked up |
-| Two Pointers — greedy "move the bottleneck side" | max-water-container | 🟡 building — sub-2 correct implementation but verbal rule stated backward ("move the larger") |
+| Two Pointers — greedy "move the bottleneck side" | max-water-container, trapping-rain-water | 🟡 building — same rule applied in sub-3 (trapping-rain-water); looked up |
 | Sort + fix-one + two-pointer with dedup (3Sum-style) | three-integer-sum | 🔴 shaky — sub-6 algorithm correct but dedup mechanics (outer skip + inner skip after match) explicitly not understood per comments |
 | Set-of-tuples for dedup of unordered triples | three-integer-sum | 🟡 building — sub-3/4 correct independent use of `set.add(tuple(...))` carrying anagram-groups syntax knowledge |
+| Prefix-suffix max decomposition | trapping-rain-water | 🔴 shaky — correct structure attempted in sub-1 but six implementation bugs; sub-2 is correct looked-up solution; same two-pass shape as products-of-array |
 
 Confidence key: 🔴 shaky · 🟡 building · 🟢 solid
 
@@ -61,11 +64,14 @@ Confidence key: 🔴 shaky · 🟡 building · 🟢 solid
 | two-integer-sum-ii | 3 (Python) | 2026-06-03 | not marked |
 | three-integer-sum | 7 (Python) | 2026-06-06 | marked — redo in 1 week |
 | max-water-container | 3 (Python) | 2026-06-06 | not marked |
+| trapping-rain-water | 4 (Python) | 2026-06-09 | marked — redo in 1 week |
 
 ---
 
 ## Coach observations
 <!-- append after each session, newest first -->
+
+*2026-06-09 — trapping-rain-water (4 subs). **Sub-0** independent attempt — wrong mental model: used immediate neighbors (`i-1`, `i+1`) instead of global left/right maxima, and `max(water, maxWater)` instead of summing. "bruh idk." **Sub-1** watched a video then tried prefix/suffix max arrays — structure correct, implementation broken in six ways: `[] * n` is `[]` (not `[0] * n`); `maxLeft[i] = value` stores current element instead of running max `left`; right-pass range starts OOB at `len(height)` instead of `n-2`; second loop uses stale `value` from the enumerate loop above instead of `height[i]`; `maxRight[i] = value` instead of `right`; `for i in water: sum += water[i]` iterates values as indices — **third appearance of this bug** (two-integer-sum-ii sub-0, three-integer-sum adjacent, and here). Also shadows `sum`. Positive: used `enumerate` correctly in the left pass — the `range(len())` habit may be weakening. **Sub-2** correct O(n) prefix/suffix looked up from "other vids" — clean, no debts, comment says "ts is so hard." **Sub-3** correct O(1) two-pointer, also looked up. Assist levels: sub-0 independent (broken), sub-1 watched video (broken), sub-2/3 looked up. New style debts flagged: `[] * n` vs `[0] * n`; stale loop variable reuse. New SYNTAX.md entry: `[0] * n` list initialization. Pattern: prefix-suffix decomposition added (🔴 shaky — same two-pass shape as products-of-array, but sub-1 couldn't implement it). **max-water-container and three-integer-sum "What made it click" still blank** — flagged again at top of notes.*
 
 *2026-06-06 — three-integer-sum (7 subs) and max-water-container (3 subs) reviewed. **three-integer-sum**: long arc — sub-0/1 tried two-pointer shape without prerequisites (no sort, no inner loop, index-as-value bug — same bug shape as two-integer-sum-ii sub-0, so flagging it as a recurring debt). Sub-2 was a broken O(n³) brute force that excluded valid triplets like `[0,0,0]` via pairwise inequality. Sub-3/4 reached correct O(n³) with sort + `set.add(tuple(...))` — the tuple-as-key syntax from anagram-groups carrying over independently is a real win. Sub-5 is a byte-duplicate of sub-4. Sub-6 is NeetCode's O(n²) two-pointer; algorithm correct, but comments explicitly say "dont get lines 6-7" (outer dedup skip) and "dont get why we do the following" (inner skip-loop after match) — the entire dedup mechanism is the gap. Also missing symmetric `e`-side dedup (only dedups `s`); still correct but extra work. Assist level: sub-0/1 independent (broken), sub-2 independent (broken), sub-3/4/5 partial-lookup ("looked solution a little"), sub-6 looked up. **max-water-container**: clean progression — sub-0 independent O(n²) brute force ("did this on my own lol"), sub-1 two-pointer attempt with two real bugs (`(s-e)` makes width negative so `if` branch never fires; pointer movement is inside `else:` so it freezes once area improves; ties cause infinite loop), sub-2 correct O(n) with hints. Sub-2 comment says "the hint that you should move the larger height was monumental" — but the code moves the *smaller* pointer (correct rule). Either the wording is off or the rule is backward in their head; called out at length in notes. Assist level: sub-0 independent, sub-1 independent (broken), sub-2 watched algorithm + hint. Two new SYNTAX.md entries: `max(best, x)` for running max, and list/set/dict mutator cheatsheet. Two Pointers pattern confidence upgraded — three correct independent implementations across is-palindrome/two-integer-sum-ii/max-water-container; scaffolding owned, per-problem decision rule still needs verbal precision. **"What made it click" still blank** across all of is-palindrome, longest-consecutive-sequence, valid-sudoku, two-integer-sum-ii — flagged at top of three-integer-sum notes. Two-integer-sum-ii's `while s <= e` question also unanswered — flagged.*
 

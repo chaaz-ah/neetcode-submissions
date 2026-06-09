@@ -188,3 +188,39 @@ result[key] = value        # dict  → [key] = value (or .update({k:v}))
 Common in dedup patterns: `set.add(tuple(triple))` then `[list(t) for t in result]` to convert back to `list[list]`.
 
 ---
+
+## `[0] * n` vs `[] * n` — initializing a list of zeros
+Use `[0] * n` when you need a list of n zeros. Multiplying an empty list always gives an empty list.
+```python
+# WRONG:
+arr = [] * 10     # → []  (multiplying empty list is still empty)
+
+# CORRECT:
+arr = [0] * 10    # → [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+
+# Works for any default value:
+arr = [False] * n
+arr = [None] * n
+
+# For 2D:
+grid = [[0] * cols for _ in range(rows)]   # NOT [[0] * cols] * rows (rows share the same list)
+```
+
+---
+
+## Iterating a list gives values, not indices
+`for x in collection` gives you the *values*. Using `x` as an index into the same collection is a bug.
+```python
+# WRONG — x is a value, not an index:
+water = [2, 0, 1, 3]
+for i in water:
+    total += water[i]   # i = 2, then water[2] = 1 (not 2!) — wrong and may IndexError
+
+# CORRECT options:
+total = sum(water)                        # simplest
+for w in water: total += w               # explicit accumulation over values
+for i in range(len(water)): total += water[i]   # explicit index iteration
+for i, w in enumerate(water): total += w        # index + value (if you need i too)
+```
+
+---

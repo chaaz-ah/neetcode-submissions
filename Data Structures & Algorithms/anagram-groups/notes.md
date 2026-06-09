@@ -3,13 +3,13 @@
 - **Problem:** https://leetcode.com/problems/group-anagrams/
 - **Pattern:** Arrays & Hashing
 - **Difficulty:** Medium
-- **Submissions:** 4 (Python)
+- **Submissions:** 6 (Python)
 
 > **Before we move on:** The "Question for you" at the bottom of the two-integer-sum notes has never been answered. Go back and fill in that "Your turn" section — the reflection is the point, not a formality.
 
 ## Verdict
 
-Four submissions, but this needs an honest read. Sub-0 is a genuine first attempt — right instinct (char frequency map) but no grouping strategy and the code was abandoned. Sub-2 landed on the correct approach (sorted string as key) but the comment is clear: saw the algorithm described in English, then had GPT fix the errors. Sub-3 and sub-5 are NeetCode solutions copied in — comments on both say "i do not know what a defaultdict is." The code in sub-5 is optimal. The understanding of why it works isn't there yet. That's the whole gap to close. Assist level: **looked up solution**.
+Six submissions, two of which were bulk-synced later and missed the original review. Sub-0 started with the right instinct (char frequency map) but abandoned before a grouping strategy landed. Sub-1 tried pairwise comparison — wrong abstraction, several overlapping bugs, gave up explicitly. Sub-2 arrived at the correct sorted-string key with GPT help fixing errors. Sub-3 and sub-4 are the count-array NeetCode approach — sub-4 has an `ord(s)` typo (should be `ord(c)`) that raises TypeError on any non-single-char input. Sub-5 is the correct version. Comments on sub-3/4/5 are identical verbatim: "i do not know what a defaultdict is." Six submissions, three of which are variations on a solution the code explains better than the understanding behind it. Assist level: **independent (broken)** for sub-0/1, **GPT-assisted** for sub-2, **looked up solution** for sub-3/4/5.
 
 ## Submission-by-submission
 
@@ -30,6 +30,34 @@ for i, string in enumerate(strs):
 - `final = [[]]` is dead scaffolding that never gets touched.
 
 **Time:** N/A — code is incomplete. **Space:** O(k) per string for `char`, but nothing is stored across iterations.
+
+---
+
+### `submission-1.py` — pairwise comparison, abandoned
+
+```python
+for i, string_1 in enumerate(strs):
+    char_1 = {}
+    for j, string_2 in enumerate(strs, i+1):
+        char_2 = {}
+        if len(string_1) == len(string_2):
+            for j in range(len(string_1)):
+                char_1[string_1[j]] = 1 + char_1.get(string_1[j], 0)
+                char_2[string_2[j]] = 1 + char_2.get(string_2[j], 0)
+            if char_1 == char_2:
+                final.append([])
+                final[i].append([string_1, string_2])
+#yea claude im stuck imma js look at the soltuion for the next submission and submit that
+```
+
+- Pairwise comparison is the wrong abstraction — checking every pair is O(n²) and still can't group correctly. The right model is: assign every string a *canonical key*; one pass through the list puts each string in the right bucket.
+- `enumerate(strs, i+1)` starts the *counter* at i+1 but iterates **all** of strs, including strings before index i. Intent was to skip already-seen pairs; `strs[i+1:]` would do that. This compares every pair twice.
+- `j` is immediately shadowed: used first as the loop variable from `enumerate`, then overwritten by `for j in range(len(string_1))` inside the body. The outer `j` (string_2) is dead after the first inner statement.
+- `char_1` is declared in the outer loop but updated inside the inner loop without resetting. By the second inner iteration it holds stale counts from the previous `string_2`, so comparisons are wrong from the start.
+- Grouping logic is broken: `final[i].append([string_1, string_2])` appends a nested pair into a single slot rather than a flat group; `final.append([])` just grows the outer list without relating to anything.
+- Assist level: **independent attempt (broken, abandoned)**.
+
+**Time/Space:** N/A — incorrect and abandoned.
 
 ---
 
